@@ -1,0 +1,56 @@
+﻿/*
+ * (C) Copyright 2014 Amaury Crickx
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+using System;
+
+namespace Recognito.Enchancements
+{
+    public class Normalizer
+    {
+        public double normalize(double[] audioSample, float sampleRate)
+        {
+
+            double max = Double.MinValue;
+
+            for (int i = 0; i < audioSample.Length; i++)
+            {
+                double abs = Math.Abs(audioSample[i]);
+                if (abs > max)
+                {
+                    max = abs;
+                }
+            }
+            if (max > 1.0d)
+            {
+                throw new ArgumentException("Expected value for audio are in the range -1.0 <= v <= 1.0 ");
+            }
+
+            if (max < 5 * MathHelper.Ulp(0.0d))
+            { // ulp of 0.0 is extremely small ! i.e. as small as it can get
+                return 1.0d;
+            }
+
+
+            for (int i = 0; i < audioSample.Length; i++)
+            {
+                audioSample[i] /= max;
+            }
+            return 1.0d / max;
+        }
+
+    }
+}
