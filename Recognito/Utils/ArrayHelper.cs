@@ -32,7 +32,7 @@ namespace Recognito
             {
                 throw new ArgumentNullException("array");
             }
-            if (start < 0 || start >= end)
+            if (start < 0 || start > end)
             {
                 throw new ArgumentOutOfRangeException("fromIndex");
             }

@@ -40,7 +40,7 @@ namespace Recognito.Algorithms
         }
 
 
-        public double[][] applyLinearPredictiveCoding(double[] window)
+        public double[][] ApplyLinearPredictiveCoding(double[] window)
         {
 
             if (windowSize != window.Length)
@@ -52,11 +52,12 @@ namespace Recognito.Algorithms
             ArrayHelper.Fill(output, 0.0d);
             ArrayHelper.Fill(error, 0.0d);
 
-            foreach (var d in matrix)
+            for (int i = 0; i < matrix.Length; i++)
             {
-                ArrayHelper.Fill(d, 0.0d);
-            }
+                matrix[i] = matrix[i] ?? new double[poles];
+                ArrayHelper.Fill(matrix[i], 0.0d);
 
+            }
 
             DiscreteAutocorrelationAtLagJ dalj = new DiscreteAutocorrelationAtLagJ();
             double[] autocorrelations = new double[poles];

@@ -2,5 +2,5 @@
 ============================================================
 
 # recognito-csharp
-Text Independent Speaker Recognition in CSharp, based on recognito in Java
+Text Independent Speaker Recognition in CSharp, ported from & based on original [recognito](https://github.com/amaurycrickx/recognito) in Java
 

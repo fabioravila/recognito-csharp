@@ -198,10 +198,14 @@ namespace Recognito.Vad
                 {
                     increment++;
                 }
+
+
                 if (!active && increment < minSilenceLength)
                 {
+                    //ugly fix, i know =], but work
+                    var end_idx = Math.Min(i + increment, result.Length - 1);
                     // convert short silence to opposite
-                    ArrayHelper.Fill(result, i, i + increment, !active);
+                    ArrayHelper.Fill(result, i, end_idx, !active);
                 }
             }
         }

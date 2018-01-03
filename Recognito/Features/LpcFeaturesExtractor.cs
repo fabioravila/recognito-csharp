@@ -52,7 +52,7 @@ namespace Recognito.Features
                 Array.Copy(voiceSample, i, audioWindow, 0, windowSize);
 
                 windowFunction.ApplyFunction(audioWindow);
-                double[] lpcCoeffs = lpc.applyLinearPredictiveCoding(audioWindow)[0];
+                double[] lpcCoeffs = lpc.ApplyLinearPredictiveCoding(audioWindow)[0];
 
                 for (int j = 0; j < poles; j++)
                 {

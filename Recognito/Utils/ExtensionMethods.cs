@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,6 +34,17 @@ namespace Recognito
             foreach (var element in source)
             {
                 target.AddOrUpdate(element.Key, element.Value, (k, old) => element.Value);
+            }
+        }
+
+
+        public static byte[] ToArray(this Stream stream)
+        {
+            using (var ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);
+
+                return ms.ToArray();
             }
         }
     }

@@ -18,6 +18,7 @@
 using Recognito.Distances;
 using Recognito.Enchancements;
 using Recognito.Features;
+using Recognito.Utils;
 using Recognito.Vad;
 using System;
 using System.Collections.Concurrent;
@@ -79,6 +80,10 @@ namespace Recognito
             }
 
             store.AddRange(voicePrintsByUserKey);
+        }
+
+        public Recognito()
+        {
         }
 
         /**
@@ -166,7 +171,7 @@ namespace Recognito
          * @throws IOException when an I/O exception occurs
          * @see Recognito#createVoicePrint(Object, double[], float)
          */
-        public VoicePrint CreateVoicePrint(T userKey, FileStream voiceSampleFile)
+        public VoicePrint CreateVoicePrint(T userKey, Stream voiceSampleFile)
         {
             var audioSample = ConvertFileToDoubleArray(voiceSampleFile);
 
@@ -174,38 +179,15 @@ namespace Recognito
         }
 
         /**
-         * Converts the given audio file to an array of doubles with values between -1.0 and 1.0
-         * @param voiceSampleFile the file to convert
-         * @return an array of doubles
-         * @throws UnsupportedAudioFileException when the JVM does not support the file format
-         * @throws IOException when an I/O exception occurs
-         */
-        private double[] ConvertFileToDoubleArray(FileStream voiceSampleFile)
-        {
-
-            //AudioInputStream sample = AudioSystem.getAudioInputStream(voiceSampleFile);
-            //AudioFormat format = sample.getFormat();
-            //float diff = Math.Abs(format.getSampleRate() - sampleRate);
-            //if (diff > 5 * MathHelper.Ulp(0.0f))
-            //{
-            //    throw new IllegalArgumentException("The sample rate for this file is different than Recognito's " +
-            //            "defined sample rate : [" + format.getSampleRate() + "]");
-            //}
-            //return FileHelper.readAudioInputStream(sample);
-
-            return null;
-        }
-
-        /**
-         * Extracts voice features from the given voice sample and merges them with previous voice 
-         * print extracted for this user key
-         * <p>
-         * Threading : it is safe to simultaneously add voice samples for a single userKey from multiple threads
-         * </p>
-         * @param userKey the user key associated with this voice print
-         * @param voiceSample the voice sample to analyze, values between -1.0 and 1.0
-         * @return the updated voice print
-         */
+ * Extracts voice features from the given voice sample and merges them with previous voice 
+ * print extracted for this user key
+ * <p>
+ * Threading : it is safe to simultaneously add voice samples for a single userKey from multiple threads
+ * </p>
+ * @param userKey the user key associated with this voice print
+ * @param voiceSample the voice sample to analyze, values between -1.0 and 1.0
+ * @return the updated voice print
+ */
         public VoicePrint MergeVoiceSample(T userKey, double[] voiceSample)
         {
 
@@ -249,11 +231,46 @@ namespace Recognito
          * @throws IOException when an I/O exception occurs
          * @see Recognito#mergeVoiceSample(Object, double[], float)
          */
-        public VoicePrint MergeVoiceSample(T userKey, FileStream voiceSampleFile)
+        public VoicePrint MergeVoiceSample(T userKey, Stream voiceSampleFile)
         {
             double[] audioSample = ConvertFileToDoubleArray(voiceSampleFile);
 
             return MergeVoiceSample(userKey, audioSample);
+        }
+
+
+        public VoicePrint CreateOrMergeVoicePrint(T userKey, Stream voiceSampleFile)
+        {
+            if (!store.ContainsKey(userKey))
+                return CreateVoicePrint(userKey, voiceSampleFile);
+            else
+                return MergeVoiceSample(userKey, voiceSampleFile);
+        }
+
+
+        /**
+         * Converts the given audio file to an array of doubles with values between -1.0 and 1.0
+         * @param voiceSampleFile the file to convert
+         * @return an array of doubles
+         * @throws UnsupportedAudioFileException when the JVM does not support the file format
+         * @throws IOException when an I/O exception occurs
+         */
+        private double[] ConvertFileToDoubleArray(Stream voiceSampleFile)
+        {
+            //TODO Remove Naudio Dependency
+            //using (var waveReader = new NAudio.Wave.WaveFileReader(voiceSampleFile))
+            //{
+            //    var format = waveReader.WaveFormat;
+            //    float diff = Math.Abs(format.SampleRate - sampleRate);
+            //    if (diff > 5 * MathHelper.Ulp(0.0f))
+            //    {
+            //        throw new ArgumentException($"The sample rate for this file is different than Recognito's defined sample rate : [{format.SampleRate}]");
+
+            //    }
+            //}
+
+            //TODO: Verify the audio format
+            return FileHelper.ReadAudioInputStream2(voiceSampleFile);
         }
 
         /**
@@ -307,7 +324,7 @@ namespace Recognito
          * @throws IOException when an I/O exception occurs
          * @see Recognito#identify(double[], float)
          */
-        public IEnumerable<MatchResult<T>> Identify(FileStream voiceSampleFile)
+        public IEnumerable<MatchResult<T>> Identify(Stream voiceSampleFile)
         {
             var audioSample = ConvertFileToDoubleArray(voiceSampleFile);
 
@@ -329,7 +346,9 @@ namespace Recognito
 
 
             voiceDetector.RemoveSilence(voiceSample, sampleRate);
+
             normalizer.normalize(voiceSample, sampleRate);
+
             double[] lpcFeatures = lpcExtractor.ExtractFeatures(voiceSample);
 
             return lpcFeatures;
