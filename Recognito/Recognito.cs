@@ -344,8 +344,7 @@ namespace Recognito
 
             var lpcExtractor = new LpcFeaturesExtractor(sampleRate, 20);
 
-
-            voiceDetector.RemoveSilence(voiceSample, sampleRate);
+            voiceSample = voiceDetector.RemoveSilence(voiceSample, sampleRate);
 
             normalizer.normalize(voiceSample, sampleRate);
 
