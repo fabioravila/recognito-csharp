@@ -47,7 +47,7 @@ namespace Recognito
          * Default constructor
          * @param sampleRate the sample rate, at least 8000.0 Hz (preferably higher)
          */
-        public Recognito(float sampleRate)
+        public Recognito(float sampleRate = 16000)
         {
             if (sampleRate < MIN_SAMPLE_RATE)
             {
@@ -64,27 +64,22 @@ namespace Recognito
         public Recognito(float sampleRate, Dictionary<T, VoicePrint> voicePrintsByUserKey)
             : this(sampleRate)
         {
+            VoicePrint universalModel = null;
 
-
-            var it = voicePrintsByUserKey.GetEnumerator();
-            if (it.MoveNext())
+            foreach (var item in voicePrintsByUserKey.Values)
             {
-                var print = it.Current.Value;
-                universalModel = new VoicePrint(print);
-
-                while (it.MoveNext())
+                if (universalModel == null)
                 {
-                    universalModel.Merge(it.Current.Value);
+                    universalModel = new VoicePrint(item);
+                    continue;
                 }
 
+                universalModel.Merge(item);
             }
 
             store.AddRange(voicePrintsByUserKey);
         }
 
-        public Recognito()
-        {
-        }
 
         /**
          * Get the universal model

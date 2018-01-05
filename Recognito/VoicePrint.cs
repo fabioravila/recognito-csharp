@@ -59,7 +59,7 @@ namespace Recognito
          * @param voicePrint the voice print
          * @return the distance
          */
-       public double GetDistance(DistanceCalculator calculator, VoicePrint voicePrint)
+        public double GetDistance(DistanceCalculator calculator, VoicePrint voicePrint)
         {
             rwl.EnterReadLock();
 
