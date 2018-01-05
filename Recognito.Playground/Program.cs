@@ -14,6 +14,8 @@ namespace Recognito.Playground
 
         static void Main(string[] args)
         {
+            var start = DateTime.Now;
+
             try
             {
                 string base_dir = "C:\\Users\\fabio\\Desktop\\audio_sample";
@@ -62,8 +64,6 @@ namespace Recognito.Playground
                         var identify = recognito.Identify(fs).FirstOrDefault();
 
                         Console.WriteLine($"identify.Key:{identify.Key},identify.Distance: {identify.Distance}, identify.LikelihoodRatio:{identify.LikelihoodRatio}");
-
-
                     }
                 }
             }
@@ -74,6 +74,8 @@ namespace Recognito.Playground
             }
             finally
             {
+                Console.WriteLine($"Time:{(DateTime.Now - start)}");
+
                 Console.WriteLine("Press Any Key do Close");
                 Console.ReadKey();
             }

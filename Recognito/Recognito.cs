@@ -238,7 +238,6 @@ namespace Recognito
             return MergeVoiceSample(userKey, audioSample);
         }
 
-
         public VoicePrint CreateOrMergeVoicePrint(T userKey, Stream voiceSampleFile)
         {
             if (!store.ContainsKey(userKey))
@@ -257,20 +256,20 @@ namespace Recognito
          */
         private double[] ConvertFileToDoubleArray(Stream voiceSampleFile)
         {
-            //TODO Remove Naudio Dependency
-            //using (var waveReader = new NAudio.Wave.WaveFileReader(voiceSampleFile))
-            //{
-            //    var format = waveReader.WaveFormat;
-            //    float diff = Math.Abs(format.SampleRate - sampleRate);
-            //    if (diff > 5 * MathHelper.Ulp(0.0f))
-            //    {
-            //        throw new ArgumentException($"The sample rate for this file is different than Recognito's defined sample rate : [{format.SampleRate}]");
+            using (var waveReader = new NAudio.Wave.WaveFileReader(voiceSampleFile))
+            {
+                var format = waveReader.WaveFormat;
+                float diff = Math.Abs(format.SampleRate - sampleRate);
+                if (diff > 5 * MathHelper.Ulp(0.0f))
+                {
+                    throw new ArgumentException($"The sample rate for this file is different than Recognito's defined sample rate : [{format.SampleRate}]");
 
-            //    }
-            //}
+                }
 
-            //TODO: Verify the audio format
-            return FileHelper.ReadAudioInputStream2(voiceSampleFile);
+                voiceSampleFile.Seek(0, SeekOrigin.Begin);
+            }
+
+            return FileHelper.ReadAudioInputStream(voiceSampleFile);
         }
 
         /**
@@ -348,10 +347,7 @@ namespace Recognito
 
             normalizer.normalize(voiceSample, sampleRate);
 
-            double[] lpcFeatures = lpcExtractor.ExtractFeatures(voiceSample);
-
-            return lpcFeatures;
+            return lpcExtractor.ExtractFeatures(voiceSample);
         }
-
     }
 }

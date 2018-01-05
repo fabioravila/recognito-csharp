@@ -49,7 +49,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Recognito\Recognito.csproj">
+    <ProjectReference Include="..\Recognito\Recognito.csproj">
       <Project>{173911fc-e8ce-4b5a-b155-c7f2f9abc355}</Project>
       <Name>Recognito</Name>
     </ProjectReference>

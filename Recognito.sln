@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recognito", "Recognito\Recognito.csproj", "{173911FC-E8CE-4B5A-B155-C7F2F9ABC355}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recognito.Playground", "Recognito.Playground\Recognito.Playground\Recognito.Playground.csproj", "{5271BEF3-4B02-463D-AEF2-06BA4EE5EC3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recognito.Playground", "Recognito.Playground\Recognito.Playground.csproj", "{5271BEF3-4B02-463D-AEF2-06BA4EE5EC3E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
