@@ -58,10 +58,13 @@
     <Compile Include="MatchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Recognito.cs" />
+    <Compile Include="SpeakerFinder\AbsoluteEuclideanDistBelowThresholdIsAMatch.cs" />
+    <Compile Include="SpeakerFinder\ISpeakerFinderAlgorithm.cs" />
+    <Compile Include="SpeakerFinder\Match.cs" />
     <Compile Include="SpeakerFinder\SpeakerFinder.cs" />
     <Compile Include="Utils\ArrayHelper.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
-    <Compile Include="Utils\FileHelper.cs" />
+    <Compile Include="Utils\AudioConverter.cs" />
     <Compile Include="Utils\MathHelper.cs" />
     <Compile Include="Vad\AutocorrellatedVoiceActivityDetector.cs" />
     <Compile Include="VoicePrint.cs" />

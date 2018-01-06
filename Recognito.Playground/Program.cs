@@ -1,16 +1,20 @@
-﻿using System;
+﻿using NAudio.Wave;
+using Recognito.Utils;
+using Recognito.Vad;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Recognito.Playground
 {
     class Program
     {
-
-        static Recognito<string> recognito = new Recognito<string>(16000);
+        const int sampleRate = 16000;
+        static Recognito<string> recognito = new Recognito<string>(sampleRate);
 
         static void Main(string[] args)
         {
@@ -22,34 +26,72 @@ namespace Recognito.Playground
 
                 var tests = new List<string>();
 
-                foreach (var pessoas in Directory.GetDirectories(base_dir).OrderBy(f => f))
+                using (var waveOut = new WaveOutEvent())
                 {
-                    var info = new DirectoryInfo(pessoas);
-                    var nome = info.Name;
 
-                    Console.WriteLine($"nome:{nome}");
+                    var voiceDetector = new AutocorrellatedVoiceActivityDetector();
 
-                    VoicePrint voice = null;
 
-                    foreach (var audio in Directory.GetFiles(pessoas, "audio_*.wav", SearchOption.TopDirectoryOnly))
+                    foreach (var pessoas in Directory.GetDirectories(base_dir).OrderBy(f => f))
                     {
-                        Console.WriteLine($"nome:{audio}");
+                        var info = new DirectoryInfo(pessoas);
+                        var nome = info.Name;
 
+                        Console.WriteLine($"nome:{nome}");
 
-                        using (var fs = new FileStream(audio, FileMode.Open))
+                        VoicePrint voice = null;
+
+                        foreach (var audio in Directory.GetFiles(pessoas, "audio_*.wav", SearchOption.TopDirectoryOnly))
                         {
-                            if (voice == null)
-                                voice = recognito.CreateVoicePrint(nome, fs);
-                            else
-                                voice = recognito.MergeVoiceSample(nome, fs);
+                            Console.WriteLine($"nome:{audio}");
+
+
+
+
+                            using (var fs = File.OpenRead(audio))
+                            {
+                                if (voice == null)
+                                    voice = recognito.CreateVoicePrint(nome, fs);
+                                else
+                                    voice = recognito.MergeVoiceSample(nome, fs);
+                            }
+
+                            using (var wr = new WaveFileReader(audio))
+                            {
+                                Console.WriteLine("Play Original");
+                                waveOut.Init(wr);
+                                waveOut.PlayAndWait();
+                            }
+
+                            using (var fs = new FileStream(audio, FileMode.Open))
+                            {
+                                var sentence = AudioConverter.ConvertAudioToDoubleArray(fs, sampleRate);
+
+                                var words = voiceDetector.SplitBySilence(sentence, sampleRate);
+
+                                var aa = AudioConverter.WriteAudioInputStream(sentence);
+
+
+
+                                if (words.Length > 1)
+                                {
+                                    foreach (var word in words)
+                                    {
+                                        var aw = AudioConverter.WriteAudioInputStream(word);
+
+                                        using (var wr = new WaveFileReader(aw))
+                                        {
+                                            Console.WriteLine("Play Word");
+                                            waveOut.Init(wr);
+                                            waveOut.PlayAndWait();
+                                            Thread.Sleep(1000);
+                                        }
+                                    }
+                                }
+
+                            }
                         }
                     }
-
-
-
-
-
-
                 }
 
                 Console.WriteLine("\n\nTestes");

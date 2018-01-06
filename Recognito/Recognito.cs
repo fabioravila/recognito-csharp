@@ -42,6 +42,8 @@ namespace Recognito
         private volatile bool universalModelWasSetByUser = new bool();
         private VoicePrint universalModel;
 
+        public float SampleRate { get { return sampleRate; } }
+
 
         /**
          * Default constructor
@@ -85,7 +87,7 @@ namespace Recognito
          * Get the universal model
          * @return the universal model
          */
-        public VoicePrint getUniversalModel()
+        public VoicePrint GetUniversalModel()
         {
             return new VoicePrint(universalModel);
         }
@@ -233,6 +235,7 @@ namespace Recognito
             return MergeVoiceSample(userKey, audioSample);
         }
 
+
         public VoicePrint CreateOrMergeVoicePrint(T userKey, Stream voiceSampleFile)
         {
             if (!store.ContainsKey(userKey))
@@ -240,7 +243,6 @@ namespace Recognito
             else
                 return MergeVoiceSample(userKey, voiceSampleFile);
         }
-
 
         /**
          * Converts the given audio file to an array of doubles with values between -1.0 and 1.0
@@ -251,20 +253,7 @@ namespace Recognito
          */
         private double[] ConvertFileToDoubleArray(Stream voiceSampleFile)
         {
-            using (var waveReader = new NAudio.Wave.WaveFileReader(voiceSampleFile))
-            {
-                var format = waveReader.WaveFormat;
-                float diff = Math.Abs(format.SampleRate - sampleRate);
-                if (diff > 5 * MathHelper.Ulp(0.0f))
-                {
-                    throw new ArgumentException($"The sample rate for this file is different than Recognito's defined sample rate : [{format.SampleRate}]");
-
-                }
-
-                voiceSampleFile.Seek(0, SeekOrigin.Begin);
-            }
-
-            return FileHelper.ReadAudioInputStream(voiceSampleFile);
+            return AudioConverter.ConvertAudioToDoubleArray(voiceSampleFile, sampleRate);
         }
 
         /**

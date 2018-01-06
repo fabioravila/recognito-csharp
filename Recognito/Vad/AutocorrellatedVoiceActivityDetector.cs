@@ -121,6 +121,65 @@ namespace Recognito.Vad
             }
         }
 
+
+        public double[][] SplitBySilence(double[] voiceSample, float sampleRate)
+        {
+            int oneMilliInSamples = (int)sampleRate / 1000;
+
+            int length = voiceSample.Length;
+            int minSilenceLength = MIN_SILENCE_MILLIS * oneMilliInSamples;
+            int minActivityLength = GetMinimumVoiceActivityLength(sampleRate);
+            bool[] result = new bool[length];
+
+            if (length < minActivityLength)
+            {
+                return new double[][] { voiceSample };
+            }
+
+            int windowSize = WINDOW_MILLIS * oneMilliInSamples;
+            double[] correlation = new double[windowSize];
+            double[] window = new double[windowSize];
+
+            for (int position = 0; position + windowSize < length; position += windowSize)
+            {
+                Array.Copy(voiceSample, position, window, 0, windowSize);
+                double mean = BruteForceAutocorrelation(window, correlation);
+                ArrayHelper.Fill(result, position, position + windowSize, mean > threshold);
+            }
+
+            MergeSmallSilentAreas(result, minSilenceLength);
+
+            int silenceCounter = MergeSmallActiveAreas(result, minActivityLength);
+
+            if (silenceCounter > 0)
+            {
+                List<double[]> splitResult = new List<double[]>();
+                for (int i = 0; i < result.Length; i++)
+                {
+                    if (result[i])
+                    {
+                        // detect lenght of active frame
+                        int startIndex = i;
+                        int counter = 0;
+                        while (i < result.Length && result[i++])
+                        {
+                            counter++;
+                        }
+
+                        double[] newFragment = new double[counter];
+                        Array.Copy(voiceSample, startIndex, newFragment, 0, counter);
+                        splitResult.Add(newFragment);
+                    }
+                }
+                return splitResult.ToArray();
+            }
+            else
+            {
+                return new double[][] { voiceSample };
+            }
+        }
+
+
         /**
          * Gets the minimum voice activity length that will be considered by the remove silence method
          * @param sampleRate the sample rate

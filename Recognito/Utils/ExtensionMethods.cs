@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Recognito
 {
-    internal static class ExtensionMethods
+    public static class ExtensionMethods
     {
         public static void AddRange<T>(this ICollection<T> target, IEnumerable<T> source)
         {
@@ -42,10 +42,19 @@ namespace Recognito
         {
             using (var ms = new MemoryStream())
             {
+                stream.Seek(0, SeekOrigin.Begin);
                 stream.CopyTo(ms);
 
                 return ms.ToArray();
             }
+        }
+
+        public static long SeekBegin(this Stream stream)
+        {
+            if (stream == null)
+                return -1;
+
+            return stream.Seek(0, SeekOrigin.Begin);
         }
     }
 }

@@ -15,7 +15,9 @@
  *
  */
 using Recognito.Distances;
+using Recognito.Utils;
 using System;
+using System.IO;
 using System.Threading;
 
 namespace Recognito
@@ -126,5 +128,19 @@ namespace Recognito
         {
             return ArrayHelper.ToString(features);
         }
+
+
+        public static VoicePrint FromFeatures(double[] features)
+        {
+            return new VoicePrint(features);
+        }
+
+        public static VoicePrint FromStream(Stream audioInputStream, float sampleRate)
+        {
+            var features = AudioConverter.ConvertAudioToDoubleArray(audioInputStream, sampleRate);
+
+            return new VoicePrint(features);
+        }
+
     }
 }
