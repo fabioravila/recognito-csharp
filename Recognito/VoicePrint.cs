@@ -135,12 +135,5 @@ namespace Recognito
             return new VoicePrint(features);
         }
 
-        public static VoicePrint FromStream(Stream audioInputStream, float sampleRate)
-        {
-            var features = AudioConverter.ConvertAudioToDoubleArray(audioInputStream, sampleRate);
-
-            return new VoicePrint(features);
-        }
-
     }
 }

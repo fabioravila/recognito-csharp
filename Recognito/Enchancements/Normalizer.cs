@@ -21,7 +21,7 @@ namespace Recognito.Enchancements
 {
     public class Normalizer
     {
-        public double normalize(double[] audioSample, float sampleRate)
+        public double Normalize(double[] audioSample, float sampleRate)
         {
 
             double max = Double.MinValue;

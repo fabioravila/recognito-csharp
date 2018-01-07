@@ -68,6 +68,8 @@
     <Compile Include="Utils\AudioConverter.cs" />
     <Compile Include="Utils\MathHelper.cs" />
     <Compile Include="Vad\AutocorrellatedVoiceActivityDetector.cs" />
+    <Compile Include="Vad\Keys.cs" />
+    <Compile Include="Vad\PreprocessorAndFeatureExtractor.cs" />
     <Compile Include="VoicePrint.cs" />
   </ItemGroup>
   <ItemGroup>

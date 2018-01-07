@@ -39,7 +39,6 @@ namespace Recognito.Features
 
         public override double[] ExtractFeatures(double[] voiceSample)
         {
-
             double[] voiceFeatures = new double[poles];
             double[] audioWindow = new double[windowSize];
 
@@ -48,7 +47,6 @@ namespace Recognito.Features
 
             for (int i = 0; (i + windowSize) <= voiceSample.Length; i += halfWindowLength)
             {
-
                 Array.Copy(voiceSample, i, audioWindow, 0, windowSize);
 
                 windowFunction.ApplyFunction(audioWindow);
@@ -68,6 +66,7 @@ namespace Recognito.Features
                     voiceFeatures[i] /= counter;
                 }
             }
+
             return voiceFeatures;
         }
     }

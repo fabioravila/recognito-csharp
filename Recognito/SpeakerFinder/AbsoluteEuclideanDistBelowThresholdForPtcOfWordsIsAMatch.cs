@@ -14,21 +14,25 @@ namespace Recognito.SpeakerFinder
         const int sampleRate = 16000;
         readonly double distanceThreshold;
         readonly double wordsPctThreshold;
+        readonly PreprocessorAndFeatureExtractor featureExtractor;
 
         public AbsoluteEuclideanDistBelowThresholdForPtcOfWordsIsAMatch(double distanceThreshold, double wordsPctThreshold)
         {
             calculator = new EuclideanDistanceCalculator();
+            voiceDetector = new AutocorrellatedVoiceActivityDetector();
+
             this.distanceThreshold = distanceThreshold;
             this.wordsPctThreshold = wordsPctThreshold;
-            voiceDetector = new AutocorrellatedVoiceActivityDetector();
+
+            featureExtractor = new PreprocessorAndFeatureExtractor(sampleRate);
         }
 
         public List<Match> FindAudioFilesContainingSpeaker(Stream speakerAudioFile, string toBeScreenedForAudioFilesWithSpeakerFolder)
         {
-            // We do not care about the learning material - no usage of Universal Model
-
             var result = new List<Match>();
-            var speakerVoicePrint = VoicePrint.FromStream(speakerAudioFile, sampleRate);
+
+
+            var speakerVoicePrint = VoicePrint.FromFeatures(featureExtractor.ProcessAndExtract(speakerAudioFile));
 
             foreach (var file in Directory.GetFiles(toBeScreenedForAudioFilesWithSpeakerFolder, "*.wav", SearchOption.TopDirectoryOnly))
             {
@@ -50,7 +54,7 @@ namespace Recognito.SpeakerFinder
 
                     if (words.Length > 0 && (100.0 * ((double)wordsWithinThreshold / words.Length)) > wordsPctThreshold)
                     {
-                        var fVoicePrint = VoicePrint.FromStream(fs, sampleRate);
+                        var fVoicePrint = VoicePrint.FromFeatures(featureExtractor.ProcessAndExtract(fs));
                         double fDistance = fVoicePrint.GetDistance(calculator, speakerVoicePrint);
                         if (fDistance < distanceThreshold)
                         {

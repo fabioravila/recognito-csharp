@@ -33,17 +33,19 @@ namespace Recognito
 {
     public class Recognito<T>
     {
-        private static readonly float MIN_SAMPLE_RATE = 8000.0f;
-        private readonly object _lock = new object();
+        static readonly float MIN_SAMPLE_RATE = 8000.0f;
+        readonly object _lock = new object();
 
-        private readonly Dictionary<T, VoicePrint> store = new Dictionary<T, VoicePrint>();
-        private readonly float sampleRate;
+        readonly Dictionary<T, VoicePrint> store = new Dictionary<T, VoicePrint>();
+        readonly float sampleRate;
 
-        private volatile bool universalModelWasSetByUser = new bool();
-        private VoicePrint universalModel;
+        volatile bool universalModelWasSetByUser = new bool();
+        VoicePrint universalModel;
+
+        readonly PreprocessorAndFeatureExtractor audioProcessor;
+
 
         public float SampleRate { get { return sampleRate; } }
-
 
         /**
          * Default constructor
@@ -52,10 +54,11 @@ namespace Recognito
         public Recognito(float sampleRate = 16000)
         {
             if (sampleRate < MIN_SAMPLE_RATE)
-            {
                 throw new ArgumentException("Sample rate should be at least 8000 Hz");
-            }
+
+
             this.sampleRate = sampleRate;
+            audioProcessor = new PreprocessorAndFeatureExtractor(this.sampleRate);
         }
 
         /**
@@ -63,8 +66,7 @@ namespace Recognito
          * @param sampleRate the sample rate, at least 8000.0 Hz (preferably higher)
          * @param voicePrintsByUserKey a {@code Map} containing user keys and their respective {@code VoicePrint}
          */
-        public Recognito(float sampleRate, Dictionary<T, VoicePrint> voicePrintsByUserKey)
-            : this(sampleRate)
+        public Recognito(float sampleRate, Dictionary<T, VoicePrint> voicePrintsByUserKey) : this(sampleRate)
         {
             VoicePrint universalModel = null;
 
@@ -101,14 +103,8 @@ namespace Recognito
         {
             lock (_lock)
             {
-                if (universalModel == null)
-                {
-                    throw new ArgumentNullException(nameof(universalModel), "The universal model may not be null");
-                }
-
+                this.universalModel = universalModel ?? throw new ArgumentNullException(nameof(universalModel), "The universal model may not be null");
                 universalModelWasSetByUser = false;
-
-                this.universalModel = universalModel;
             }
         }
 
@@ -135,7 +131,7 @@ namespace Recognito
                     throw new ArgumentException("The userKey already exists: [{userKey}");
                 }
 
-                double[] features = ExtractFeatures(voiceSample, sampleRate);
+                double[] features = audioProcessor.ProcessAndExtract(voiceSample);
                 VoicePrint voicePrint = new VoicePrint(features);
 
                 if (!universalModelWasSetByUser)
@@ -203,7 +199,7 @@ namespace Recognito
                 }
 
 
-                double[] features = ExtractFeatures(voiceSample, sampleRate);
+                double[] features = audioProcessor.ProcessAndExtract(voiceSample);
 
                 if (!universalModelWasSetByUser)
                 {
@@ -275,7 +271,7 @@ namespace Recognito
                 throw new InvalidOperationException("There is no voice print enrolled in the system yet");
             }
 
-            VoicePrint voicePrint = new VoicePrint(ExtractFeatures(voiceSample, sampleRate));
+            var voicePrint = new VoicePrint(audioProcessor.ProcessAndExtract(voiceSample));
 
             var calculator = new EuclideanDistanceCalculator();
             var matches = new List<MatchResult<T>>(store.Count);
@@ -322,16 +318,7 @@ namespace Recognito
          */
         private double[] ExtractFeatures(double[] voiceSample, float sampleRate)
         {
-            var voiceDetector = new AutocorrellatedVoiceActivityDetector();
-            var normalizer = new Normalizer();
-
-            var lpcExtractor = new LpcFeaturesExtractor(sampleRate, 20);
-
-            voiceSample = voiceDetector.RemoveSilence(voiceSample, sampleRate);
-
-            normalizer.normalize(voiceSample, sampleRate);
-
-            return lpcExtractor.ExtractFeatures(voiceSample);
+            return audioProcessor.ProcessAndExtract(voiceSample);
         }
     }
 }
