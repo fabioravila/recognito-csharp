@@ -58,6 +58,7 @@
     <Compile Include="MatchResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Recognito.cs" />
+    <Compile Include="SpeakerFinder\AbsoluteEuclideanDistBelowThresholdForPtcOfWordsIsAMatch.cs" />
     <Compile Include="SpeakerFinder\AbsoluteEuclideanDistBelowThresholdIsAMatch.cs" />
     <Compile Include="SpeakerFinder\ISpeakerFinderAlgorithm.cs" />
     <Compile Include="SpeakerFinder\Match.cs" />
