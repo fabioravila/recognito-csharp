@@ -185,7 +185,7 @@ namespace Recognito.Vad
          * @param sampleRate the sample rate
          * @return the length
          */
-        public int GetMinimumVoiceActivityLength(float sampleRate)
+        private int GetMinimumVoiceActivityLength(float sampleRate)
         {
             return MIN_VOICE_MILLIS * (int)sampleRate / 1000;
         }

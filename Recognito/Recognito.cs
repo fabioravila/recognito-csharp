@@ -231,7 +231,6 @@ namespace Recognito
             return MergeVoiceSample(userKey, audioSample);
         }
 
-
         public VoicePrint CreateOrMergeVoicePrint(T userKey, Stream voiceSampleFile)
         {
             if (!store.ContainsKey(userKey))
@@ -239,6 +238,7 @@ namespace Recognito
             else
                 return MergeVoiceSample(userKey, voiceSampleFile);
         }
+
 
         /**
          * Converts the given audio file to an array of doubles with values between -1.0 and 1.0

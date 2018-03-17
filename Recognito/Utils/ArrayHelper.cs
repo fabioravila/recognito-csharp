@@ -46,7 +46,6 @@ namespace Recognito
             }
         }
 
-
         public static string ToString<T>(T[] list)
         {
             return "[" + string.Join(",", list) + "]";

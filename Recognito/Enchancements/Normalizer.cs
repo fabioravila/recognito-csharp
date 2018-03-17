@@ -34,6 +34,7 @@ namespace Recognito.Enchancements
                     max = abs;
                 }
             }
+
             if (max > 1.0d)
             {
                 throw new ArgumentException("Expected value for audio are in the range -1.0 <= v <= 1.0 ");
@@ -51,6 +52,5 @@ namespace Recognito.Enchancements
             }
             return 1.0d / max;
         }
-
     }
 }

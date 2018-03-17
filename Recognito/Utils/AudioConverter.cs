@@ -43,7 +43,7 @@ namespace Recognito.Utils
                 return floatSamples;
 
 
-                ////THis is other way, but is a bitr slower
+                ////Other way, but is a bit slower
                 //var sprov = reader.ToSampleProvider();
                 //var samples = new float[reader.Length];
                 //sprov.Read(samples, 0, (int)reader.Length);

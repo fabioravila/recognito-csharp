@@ -64,6 +64,7 @@
     <Compile Include="SpeakerFinder\Match.cs" />
     <Compile Include="SpeakerFinder\SpeakerFinder.cs" />
     <Compile Include="Utils\ArrayHelper.cs" />
+    <Compile Include="Utils\ArrayWriter.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
     <Compile Include="Utils\AudioConverter.cs" />
     <Compile Include="Utils\MathHelper.cs" />

@@ -107,6 +107,7 @@ namespace Recognito.Playground
 
                         Console.WriteLine($"identify.Key:{identify.Key},identify.Distance: {identify.Distance}, identify.LikelihoodRatio:{identify.LikelihoodRatio}");
                     }
+
                 }
             }
             catch (Exception ex)
@@ -123,5 +124,7 @@ namespace Recognito.Playground
             }
 
         }
+
+
     }
 }
