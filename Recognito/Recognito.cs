@@ -263,9 +263,8 @@ namespace Recognito
          * @param voiceSample the voice sample, values between -1.0 and 1.0
          * @return a list MatchResults sorted by distance
          */
-        public IEnumerable<MatchResult<T>> Identify(double[] voiceSample)
+        public IEnumerable<MatchResult<T>> Identify(double[] voiceSample, double maxDistance = 0)
         {
-
             if (store.Count == 0)
             {
                 throw new InvalidOperationException("There is no voice print enrolled in the system yet");
@@ -281,15 +280,18 @@ namespace Recognito
             foreach (var entry in store)
             {
                 var distance = entry.Value.GetDistance(calculator, voicePrint);
+
+                if (maxDistance > 0 && distance > maxDistance)
+                    continue;
+
                 // likelihood : how close is the given voice sample to the current VoicePrint 
                 // compared to the total distance between the current VoicePrint and the universal model 
                 int likelihood = 100 - (int)(distance / (distance + distanceFromUniversalModel) * 100);
                 matches.Add(new MatchResult<T>(entry.Key, likelihood, distance));
             }
 
-            matches = matches.OrderBy(m => m.Distance).ToList();
 
-            return matches;
+            return matches.OrderBy(m => m.Distance);
         }
 
         /**
@@ -303,11 +305,11 @@ namespace Recognito
          * @throws IOException when an I/O exception occurs
          * @see Recognito#identify(double[], float)
          */
-        public IEnumerable<MatchResult<T>> Identify(Stream voiceSampleFile)
+        public IEnumerable<MatchResult<T>> Identify(Stream voiceSampleFile, double maxDistance = 0)
         {
             var audioSample = ConvertFileToDoubleArray(voiceSampleFile);
 
-            return Identify(audioSample);
+            return Identify(audioSample, maxDistance);
         }
 
         /**

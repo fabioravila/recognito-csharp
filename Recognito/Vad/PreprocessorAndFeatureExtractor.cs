@@ -17,6 +17,7 @@ namespace Recognito.Vad
             extractor = new LpcFeaturesExtractor(sampleRate, 20);
             voiceDetector = new AutocorrellatedVoiceActivityDetector();
             normalizer = new Normalizer();
+            this.sampleRate = sampleRate;
         }
 
 

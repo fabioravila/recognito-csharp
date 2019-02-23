@@ -5,6 +5,7 @@ namespace Recognito.Playground
 {
     public static class ExtensionMethods
     {
+
         public static void PlayAndWait(this WaveOutEvent waveOut)
         {
             if (waveOut == null)
@@ -14,5 +15,6 @@ namespace Recognito.Playground
 
             while (waveOut.PlaybackState != PlaybackState.Stopped) { Thread.Sleep(50); }
         }
+
     }
 }
