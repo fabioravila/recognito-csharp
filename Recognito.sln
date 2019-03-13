@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recognito", "Recognito\Reco
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recognito.Playground", "Recognito.Playground\Recognito.Playground.csproj", "{5271BEF3-4B02-463D-AEF2-06BA4EE5EC3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recognito.Tests", "Recognito.Tests\Recognito.Tests.csproj", "{D1B82486-E206-417F-8A44-BFF513A153D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5271BEF3-4B02-463D-AEF2-06BA4EE5EC3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5271BEF3-4B02-463D-AEF2-06BA4EE5EC3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5271BEF3-4B02-463D-AEF2-06BA4EE5EC3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1B82486-E206-417F-8A44-BFF513A153D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1B82486-E206-417F-8A44-BFF513A153D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1B82486-E206-417F-8A44-BFF513A153D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1B82486-E206-417F-8A44-BFF513A153D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
